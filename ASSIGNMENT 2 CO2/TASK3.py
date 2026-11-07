@@ -1,55 +1,6 @@
-def normalise(text):
-    text = text.strip()
-    text = text.replace(" ", "")
-    text = text.replace("-", "")
-    return text.upper()
+number = input("Enter vehicle number: ").upper().strip()
 
-
-def is_valid(reg):
-    if len(reg) not in (9, 10):
-        return False
-
-    state = reg[:2]
-    district = reg[2:4]
-    series = reg[4:-4]
-    number = reg[-4:]
-
-    return (
-        state.isalpha()
-        and district.isdigit()
-        and len(series) in (1, 2)
-        and series.isalpha()
-        and number.isdigit()
-    )
-
-
-def format_number(reg):
-    if not is_valid(reg):
-        return "Invalid registration number"
-
-    return f"{reg[:2]} {reg[2:4]} {reg[4:-4]} {reg[-4:]}"
-
-
-vehicles = [
-    "tn 09 ab 1234",
-    "KA-01-M-0007",
-    "TN9AB1234",
-    "TN 22 1234 AB",
-    "KL 07 CD 5678",
-    "AP-39-X-1234"
-]
-
-for raw in vehicles:
-    reg = normalise(raw)
-
-    if is_valid(reg):
-        print(raw, "->", reg, "->", format_number(reg))
-    else:
-        print(raw, "->", reg, "-> INVALID")
-
-
-# Regular expression alternative
-import re
-
-def regex_valid(reg):
-    return bool(re.fullmatch(r"[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}", reg))
+if len(number) >= 6 and number[:2].isalpha() and number[-4:].isdigit():
+    print("Valid:", number)
+else:
+    print("Invalid vehicle number")
