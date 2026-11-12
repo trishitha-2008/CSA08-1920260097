@@ -2,36 +2,31 @@ class InvalidRecord(Exception):
     pass
 
 def parse_line(line):
-    parts = line.strip().split(",")
-
-    if len(parts) != 3:
+    p = line.strip().split(",")
+    if len(p) != 3:
         raise InvalidRecord("Invalid fields")
-
-    if parts[2] not in ["P", "A"]:
+    if p[2] not in ("P", "A"):
         raise InvalidRecord("Invalid status")
+    return p
 
-    return parts
-
-def summarise(file):
-    present = 0
-    absent = 0
+def summarise(path):
+    present = absent = 0
     errors = []
 
     try:
-        with open(file, "r") as f:
-            for i, line in enumerate(f, 1):
+        with open(path) as f:
+            for n, line in enumerate(f, 1):
                 try:
-                    data = parse_line(line)
-                    if data[2] == "P":
+                    p = parse_line(line)
+                    if p[2] == "P":
                         present += 1
                     else:
                         absent += 1
                 except InvalidRecord as e:
-                    errors.append((i, str(e)))
-
+                    errors.append((n, str(e)))
     except FileNotFoundError:
-        print("File not found")
+        errors.append((0, "File not found"))
 
     return present, absent, errors
 
-print(summarise("attendance.txt"))
+print(summarise("attendance.csv"))
